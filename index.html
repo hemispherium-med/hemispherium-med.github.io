@@ -308,6 +308,39 @@ details.howto[open] summary{margin-bottom:8px}
 .pmodal[hidden]{display:none}
 .pbox{background:var(--surface);border-radius:var(--r);max-width:980px;width:100%;padding:12px 14px 16px;display:flex;flex-direction:column;gap:10px;margin:auto 0}
 .pbox .zoom{max-width:100%;height:auto;display:block;margin:0 auto;border-radius:6px}
+.hero{position:relative;border-radius:16px;background:#0f1a1d;color:#e6eef0;padding:30px 28px 26px 32px;display:grid;grid-template-columns:minmax(0,1fr) minmax(240px,44%);grid-template-areas:"txt plate" "cards plate";column-gap:24px;row-gap:18px;overflow:hidden}
+.hero-txt{grid-area:txt;display:flex;flex-direction:column;gap:14px;min-width:0}
+.hero-plate{grid-area:plate;align-self:center;min-width:0}
+.hero-plate svg{display:block;width:100%;height:auto;max-width:420px;margin-left:auto}
+.hero-eyebrow{font-size:.78rem;letter-spacing:.12em;font-weight:600;color:#7fd3df;text-transform:uppercase}
+.hero h1{color:#fff;font-size:clamp(1.35rem,1rem + 1.6vw,2rem);line-height:1.2}
+.hero p{margin:0;color:#b9c9ce;font-size:1rem;line-height:1.5;max-width:44ch}
+.hero-cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:2px}
+.hero-btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:10px;border:1.5px solid transparent;font:inherit;font-weight:600;font-size:1rem;text-decoration:none;cursor:pointer;white-space:nowrap}
+.hero-btn.primary{background:#7fd3df;color:#0b1a1e;min-height:54px;padding:0 24px;font-size:1.05rem}
+.hero-btn.primary:hover{background:#a5e3ec}
+.hero-btn.ghost{background:transparent;color:#e6eef0;border-color:#47636a}
+.hero-btn.ghost:hover{border-color:#7fd3df;color:#fff}
+.hero-btn:focus-visible,.hero-card:focus-visible{outline:3px solid #7fd3df;outline-offset:2px}
+.hero-cards{grid-area:cards;align-self:end;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.hero-card{display:flex;gap:10px;align-items:center;background:#16252a;border:1px solid #26393e;border-radius:12px;padding:10px 12px;color:#e6eef0;text-decoration:none;text-align:left;font:inherit;cursor:pointer;min-height:56px}
+.hero-card[hidden]{display:none}
+.hero-card:hover{border-color:#7fd3df}
+.hero-card svg{flex:0 0 auto}
+.hero-card b{display:block;font-size:.9rem;font-weight:600;color:#fff;line-height:1.25}
+.hero-card span span{font-size:.78rem;color:#9fb3b9}
+@media (max-width:640px){
+  .hero{display:block;padding:20px 18px 18px}
+  .hero-plate{float:right;width:96px;margin:-6px -6px 6px 10px}
+  .hero-plate .lbl{display:none}
+  .hero-txt{display:block}
+  .hero-txt>*+*{margin-top:12px}
+  .hero-eyebrow{display:block}
+  .hero-cta{display:flex;clear:both;padding-top:4px}
+  .hero-btn{flex:1 1 auto}
+  .hero-cards{clear:both;margin-top:16px;grid-template-columns:1fr}
+}
+@media (max-width:820px){nav.tabs .lg-only{display:none} nav.tabs .sm-only{display:inline}}
 </style>
 </head>
 <body>
@@ -648,6 +681,7 @@ function renderWisdom(next) {
   box.innerHTML = `<span class="qm" aria-hidden="true">“</span><p>${esc(t)}<span class="who">— ${esc(w)}</span></p><button class="btn sm ghost" id="wNext" title="Следующая мудрость">↻</button>`;
   $("#wNext").onclick = () => renderWisdom(true);
 }
+const ARROW = `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>`;
 function viewHome() {
   let tq = 0, tc = 0, ans = 0, right = 0, nch = 0;
   for (const b of S.index.books) for (const c of b.chapters) { nch++; tq += c.nq; tc += c.nc; const s = chStats(c); ans += s.right + s.wrong; right += s.right; }
@@ -662,24 +696,22 @@ function viewHome() {
   const lastMeta = last && S.chById[last.ch];
   app.innerHTML = `
   <div class="stack">
-    <section class="banner">
-      ${STICKERS.map((k, i) => `<button class="stk${k.dsk ? " dsk" : ""}" data-stk="${i}" aria-label="Стикер «${k.n}»: нажмите, чтобы узнать факт" style="--x:${k.x};--y:${k.y};--mx:${k.mx};--my:${k.my};--r:${k.r};--s:${k.s};--d:${k.d}">${k.svg}</button>`).join("")}
-      <div class="txt">
-        <span class="eyebrow">Медицинский тренажёр · неотложная хирургия</span>
-        <h1>Решай тесты и клинические задачи как настоящий хирург</h1>
-        <p>${tq} ${plural(tq, ["вопрос", "вопроса", "вопросов"])} и ${tc} ${plural(tc, ["задача", "задачи", "задач"])} по учебникам Затевахина и Шайна. После каждого ответа — разбор и страница книги.</p>
-        <div class="cta">
-          ${lastMeta ? `<a class="btn light" href="#${last.ch}">▶ Продолжить: гл. ${esc(lastMeta.n)} «${esc(lastMeta.title.length > 32 ? lastMeta.title.slice(0, 30) + "…" : lastMeta.title)}»</a>` : `<button class="btn light" id="toTopics">▶ Начать решать</button>`}
-          <a class="btn" href="#ask">💬 Задать вопрос</a>
-          <a class="btn" href="#mixed">🎲 Смешанный тест</a>
+    <section class="hero">
+      <div class="hero-plate"><svg viewBox="0 0 410 480" role="img" aria-label="Таблица из атласа: сердце, передняя поверхность"> <rect x="22" y="30" width="380" height="420" rx="6" fill="#fbfaf6" stroke="#c6d4cf" stroke-width="1.2"></rect> <rect x="30" y="38" width="367" height="404" rx="3" fill="none" stroke="#e1e8e5" stroke-width="1"></rect> <g class="lbl"><text x="44" y="62" font-family="Golos Text, sans-serif" font-size="10" letter-spacing="2" fill="#6b7d84">TAB. I</text> <text x="366" y="62" text-anchor="end" font-family="Golos Text, sans-serif" font-size="10" letter-spacing="1.5" fill="#6b7d84">COR · FACIES STERNOCOSTALIS</text> <line x1="44" y1="70" x2="366" y2="70" stroke="#e1e8e5" stroke-width="1"></line></g> <path d="M268 166 C250 158 225 156 196 162" fill="none" stroke="#0b6b7c" stroke-width="13" stroke-linecap="round"></path> <path d="M268 166 C250 158 225 156 196 162" fill="none" stroke="#e8f1ee" stroke-width="8.5" stroke-linecap="round"></path> <path d="M190 206 L186 96" fill="none" stroke="#0b6b7c" stroke-width="17" stroke-linecap="round"></path> <path d="M190 206 L186 96" fill="none" stroke="#e8f1ee" stroke-width="12" stroke-linecap="round"></path> <path d="M226 118 L220 78 M244 111 L246 72 M262 112 L272 76" fill="none" stroke="#0b6b7c" stroke-width="11" stroke-linecap="round"></path> <path d="M226 118 L220 78 M244 111 L246 72 M262 112 L272 76" fill="none" stroke="#f3e2df" stroke-width="6.5" stroke-linecap="round"></path> <path d="M212 202 C208 160 212 128 236 116 C262 104 292 116 300 146 L304 214" fill="none" stroke="#0b6b7c" stroke-width="22" stroke-linecap="round"></path> <path d="M212 202 C208 160 212 128 236 116 C262 104 292 116 300 146 L304 214" fill="none" stroke="#f3e2df" stroke-width="16" stroke-linecap="round"></path> <path d="M232 206 C238 182 250 170 268 166 L316 160" fill="none" stroke="#0b6b7c" stroke-width="16" stroke-linecap="round"></path> <path d="M232 206 C238 182 250 170 268 166 L316 160" fill="none" stroke="#e8f1ee" stroke-width="11" stroke-linecap="round"></path> <path d="M170 205 C140 215 128 260 140 300 C155 350 205 395 262 420 C285 380 300 330 296 280 C292 230 260 198 225 195 C205 193 186 198 170 205 Z" fill="#f3e2df" stroke="#0b6b7c" stroke-width="2.4" stroke-linejoin="round"></path> <path d="M236 208 C244 268 250 340 258 412" fill="none" stroke="#b5473d" stroke-width="2.2" stroke-linecap="round"></path> <path d="M244 262 C262 270 276 284 286 300 M250 322 C266 328 278 340 284 352" fill="none" stroke="#b5473d" stroke-width="1.5" stroke-linecap="round"></path> <path d="M198 212 C168 246 160 296 182 342 C196 370 220 392 240 404" fill="none" stroke="#b5473d" stroke-width="2" stroke-linecap="round" stroke-dasharray="1 0"></path> <path d="M150 250 C162 262 166 280 164 300 M160 320 C176 326 186 340 190 356" fill="none" stroke="#c9a7a2" stroke-width="1.2" stroke-linecap="round"></path> <g class="lbl"><g stroke="#8fa6a0" stroke-width="1" fill="none"> <path d="M284 112 L328 96"></path> <path d="M186 130 L120 120"></path> <path d="M300 164 L330 186"></path> <path d="M278 330 L330 344"></path> <path d="M168 300 L112 318"></path> <path d="M262 420 L300 432"></path> </g> <g fill="#0b6b7c"><circle cx="284" cy="112" r="2.4"></circle><circle cx="186" cy="130" r="2.4"></circle><circle cx="300" cy="164" r="2.4"></circle><circle cx="278" cy="330" r="2.4"></circle><circle cx="168" cy="300" r="2.4"></circle><circle cx="262" cy="420" r="2.4"></circle></g> <g font-family="Golos Text, sans-serif" font-size="10.5" font-style="italic" fill="#3d4f57"> <text x="332" y="99">Arcus aortae</text> <text x="116" y="123" text-anchor="end">V. cava sup.</text> <text x="334" y="190">Truncus</text><text x="334" y="203">pulmonalis</text> <text x="334" y="347">Ventriculus</text><text x="334" y="360">sinister</text> <text x="108" y="321" text-anchor="end">Ventriculus</text><text x="108" y="334" text-anchor="end">dexter</text> <text x="304" y="436">Apex cordis</text> </g> <text x="44" y="432" font-family="Golos Text, sans-serif" font-size="10" fill="#6b7d84">Fig. 1</text></g> </svg></div>
+      <div class="hero-txt">
+        <span class="hero-eyebrow">Медицинский тренажёр</span>
+        <h1>Учись как врач. Твой лучший помощник в меде.</h1>
+        <p>Тесты, клинические задачи, макро- и микропрепараты и многое другое.</p>
+        <div class="hero-cta">
+          ${lastMeta ? `<a class="hero-btn primary" href="#${last.ch}" title="${esc(lastMeta.title)}">Продолжить: гл. ${esc(lastMeta.n)} ${ARROW}</a>` : `<button class="hero-btn primary" id="toTopics">Начать решать ${ARROW}</button>`}
+          <a class="hero-btn ghost" href="#ask">Задать вопрос</a>
         </div>
       </div>
-      <div class="fact" id="fact"><b>👆 Нажмите на любой стикер</b> — узнаете интересный факт из учебников.</div>
+      <div class="hero-cards">
+        <button class="hero-card" id="toSurg"><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7fd3df" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3v5a4 4 0 0 0 8 0V3"/><path d="M10 12v3a5 5 0 0 0 10 0v-2"/><circle cx="20" cy="11" r="2"/></svg><span><b>Неотложная хирургия</b><span>${tq} ${plural(tq, ["вопрос", "вопроса", "вопросов"])} · ${tc} ${plural(tc, ["задача", "задачи", "задач"])}</span></span></button>
+        <a class="hero-card" href="#pat" id="patCard" hidden><svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#7fd3df" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 21h12"/><path d="M9 18h6"/><path d="M12 18a6 6 0 0 0 6-6"/><path d="M9 4l4 4-3 3-4-4z"/><path d="M11 9l3 3"/><path d="M14 12a3 3 0 0 1 4 0"/></svg><span><b>Патанатомия</b><span id="patSubjTxt">препараты: макро и микро</span></span></a>
+      </div>
     </section>
-    <div class="subjects" id="subjects" hidden>
-      <button class="subj" id="toSurg"><span class="ic" aria-hidden="true">🩺</span><span><b>Неотложная хирургия</b><span>${nch} глав · ${tq} вопросов · ${tc} задач</span></span></button>
-      <a class="subj" href="#pat"><span class="ic" aria-hidden="true">🔬</span><span><b>Патологическая анатомия</b><span id="patSubjTxt">препараты к экзамену: фото, тест, атлас</span></span></a>
-    </div>
     <div class="duo">
       <section class="card qday" id="qday"><span class="tag">⚡ Вопрос дня</span><p class="muted" style="margin:0">Загружаю вопрос…</p></section>
       <section class="card level" id="level"></section>
@@ -742,13 +774,8 @@ function viewHome() {
   };
   renderList();
   renderLevel(); renderWisdom(false); renderQday(false).catch(() => { const b = $("#qday"); if (b) b.innerHTML = `<span class="tag">⚡ Вопрос дня</span><p class="muted">Не удалось загрузить вопрос.</p>`; });
-  app.querySelectorAll("[data-stk]").forEach(b => b.onclick = () => {
-    const k = STICKERS[+b.dataset.stk];
-    $("#fact").innerHTML = `<b>💡 Знаете ли вы?</b> ${esc(k.f[0])}<span class="fsrc">${esc(k.f[1])}</span>`;
-    b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop");
-  });
-  loadPat().then(d => { const box = $("#subjects"); if (!box) return; const t = patTotals();
-    $("#patSubjTxt").textContent = `${d.specs.length} ${plural(d.specs.length, ["препарат", "препарата", "препаратов"])} к экзамену${t.done ? ` · решено ${t.done}` : ": фото, тест, атлас"}`; box.hidden = false; }).catch(() => {});
+  loadPat().then(d => { const card = $("#patCard"); if (!card) return; const t = patTotals();
+    $("#patSubjTxt").textContent = `${d.specs.length} ${plural(d.specs.length, ["препарат", "препарата", "препаратов"])}${t.done ? ` · решено ${t.done}` : ": макро и микро"}`; card.hidden = false; }).catch(() => {});
   const ts = $("#toSurg"); if (ts) ts.onclick = () => $(".subject").scrollIntoView({ behavior: "smooth", block: "start" });
   const tt = $("#toTopics"); if (tt) tt.onclick = () => $("#hq").scrollIntoView({ behavior: "smooth", block: "center" });
   const inp = $("#hq");
