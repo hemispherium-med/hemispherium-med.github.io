@@ -164,6 +164,63 @@ nav.tabs .cnt[hidden]{display:none}
   nav.tabs{justify-content:space-between}
   .lg-only{display:none} .sm-only{display:inline}
 }
+/* главная: баннер со стикерами */
+.banner{position:relative;overflow:hidden;border-radius:16px;padding:26px 26px 22px;color:#fff;min-height:270px;
+  background:radial-gradient(circle at 85% 20%,rgba(255,255,255,.14),transparent 40%),radial-gradient(circle at 10% 110%,rgba(255,255,255,.10),transparent 45%),linear-gradient(135deg,#0b6b7c 0%,#0f8a8f 55%,#14a39a 100%)}
+.banner::before{content:"";position:absolute;inset:0;opacity:.10;pointer-events:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='44' height='44'%3E%3Cpath d='M19 14h6v5h5v6h-5v5h-6v-5h-5v-6h5z' fill='white'/%3E%3C/svg%3E")}
+.banner .txt{position:relative;z-index:2;max-width:52%;display:flex;flex-direction:column;gap:10px}
+.banner .eyebrow{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;font-weight:600;opacity:.85}
+.banner h1{color:#fff;font-size:1.6rem}
+.banner p{margin:0;opacity:.92;max-width:46ch}
+.banner .cta{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.banner .btn{border-color:rgba(255,255,255,.45);background:rgba(255,255,255,.12);color:#fff}
+.banner .btn:hover{background:rgba(255,255,255,.22);border-color:#fff}
+.banner .btn.light{background:#fff;color:#0b6b7c;border-color:#fff;font-weight:600}
+.banner .fact{position:relative;z-index:2;margin-top:14px;background:rgba(255,255,255,.95);color:#15232a;border-radius:12px;padding:10px 14px;font-size:.9rem;line-height:1.45;max-width:52%;box-shadow:0 6px 18px rgba(0,0,0,.15)}
+.banner .fact b{color:#0b6b7c}
+.banner .fact .fsrc{display:block;font-size:.78rem;color:#5a6b73;margin-top:2px}
+.stk{position:absolute;left:var(--x);top:var(--y);width:var(--s,64px);height:var(--s,64px);padding:0;border:0;background:none;cursor:pointer;z-index:1;
+  transform:rotate(var(--r,0deg));animation:float 6s ease-in-out infinite;animation-delay:var(--d,0s);
+  filter:drop-shadow(2.5px 0 0 #fff) drop-shadow(-2.5px 0 0 #fff) drop-shadow(0 2.5px 0 #fff) drop-shadow(0 -2.5px 0 #fff) drop-shadow(0 6px 8px rgba(0,0,0,.28))}
+.stk svg{width:100%;height:100%;display:block;transition:transform .2s}
+.stk:hover svg{transform:scale(1.12) rotate(-6deg)}
+.stk.pop svg{animation:pop .5s ease}
+@keyframes float{0%,100%{translate:0 0}50%{translate:0 -8px}}
+@keyframes pop{0%{transform:scale(1)}40%{transform:scale(1.35) rotate(10deg)}100%{transform:scale(1)}}
+@media (max-width:640px){
+  .banner{padding:118px 16px 16px;min-height:0}
+  .banner .txt,.banner .fact{max-width:none}
+  .banner h1{font-size:1.3rem}
+  .stk{left:var(--mx);top:var(--my);width:calc(var(--s,64px)*.78);height:calc(var(--s,64px)*.78)}
+  .stk.dsk{display:none}
+}
+.duo{display:grid;grid-template-columns:1.55fr 1fr;gap:12px;align-items:start}
+@media (max-width:720px){.duo{grid-template-columns:1fr}}
+.qday{display:flex;flex-direction:column;gap:12px;position:relative}
+.qday .tag{display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;color:var(--accent);text-transform:uppercase;letter-spacing:.05em}
+.qday .qtext{font-size:1rem}
+.qday .row .btn{padding:6px 12px}
+.level{display:flex;flex-direction:column;gap:10px}
+.level .rank{display:flex;align-items:center;gap:12px}
+.level .badge{width:54px;height:54px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:1.8rem;background:var(--accent-soft);flex:0 0 auto}
+.level .rank b{font-family:var(--f-display);font-size:1.1rem;display:block}
+.level .stats{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.level .stat{background:var(--bg);border-radius:10px;padding:8px 10px}
+.level .stat b{display:block;font-family:var(--f-display);font-size:1.15rem;font-variant-numeric:tabular-nums}
+.level .stat span{font-size:.78rem;color:var(--muted)}
+.lvbar{height:8px;border-radius:99px;background:var(--line);overflow:hidden}
+.lvbar i{display:block;height:100%;background:linear-gradient(90deg,var(--accent),#14a39a);border-radius:99px}
+.wisdom{display:flex;gap:14px;align-items:flex-start}
+.wisdom .qm{font-family:Georgia,serif;font-size:3rem;line-height:.8;color:var(--accent);opacity:.6}
+.wisdom p{margin:0;font-size:1.02rem;font-style:italic;max-width:70ch}
+.wisdom .who{display:block;font-size:.82rem;color:var(--muted);font-style:normal;margin-top:4px}
+.wisdom .btn{margin-left:auto;flex:0 0 auto}
+.confetti{position:absolute;inset:0;pointer-events:none;overflow:visible;z-index:5}
+.confetti i{position:absolute;left:50%;top:40%;width:8px;height:12px;border-radius:2px;background:var(--c);opacity:0;animation:conf 1.1s ease-out forwards}
+.confetti i.plus{width:auto;height:auto;background:none;color:var(--c);font-weight:800;font-style:normal;font-size:16px}
+@keyframes conf{0%{opacity:1;transform:translate(0,0) rotate(0)}100%{opacity:0;transform:translate(var(--dx),var(--dy)) rotate(var(--rot))}}
+@media (prefers-reduced-motion: reduce){.stk{animation:none}.confetti{display:none}}
 /* главная */
 .hero{display:flex;flex-direction:column;gap:6px}
 .hero p{margin:0}
@@ -270,6 +327,7 @@ function srcLine(chId, p) {
 }
 
 /* ---------- прогресс: браузер + личное хранилище ---------- */
+const dayKey = ts => { const d = new Date(ts); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const LS_KEY = "surg-trainer-progress-v1";
 const P = {
   data: { v: 1, q: {}, c: {} }, db: null, ref: null, timer: null, writing: false, dirty: false, status: "",
@@ -280,7 +338,10 @@ const P = {
       const src = other[k] || {};
       for (const id in src) { const a = this.data[k][id], b = src[id]; if (!a || (b && (b.ts || 0) > (a.ts || 0))) this.data[k][id] = b; }
     }
+    const od = other.days || {}; this.data.days = this.data.days || {};
+    for (const d in od) this.data.days[d] = Math.max(this.data.days[d] || 0, od[d] || 0);
   },
+  bump() { const d = dayKey(Date.now()); this.data.days = this.data.days || {}; this.data.days[d] = (this.data.days[d] || 0) + 1; },
   save() {
     try { localStorage.setItem(LS_KEY, JSON.stringify(this.data)); } catch (e) {}
     updateMistakeCnt();
@@ -297,9 +358,9 @@ const P = {
   rec(id, ok) {
     const e = this.data.q[id] || { r: 0, w: 0 };
     if (ok) e.r++; else e.w++;
-    e.l = ok ? 1 : 0; e.ts = Date.now(); this.data.q[id] = e; this.save();
+    e.l = ok ? 1 : 0; e.ts = Date.now(); this.data.q[id] = e; this.bump(); this.save();
   },
-  recCase(id, ok, total) { this.data.c[id] = { ok, total, ts: Date.now() }; this.save(); }
+  recCase(id, ok, total) { this.data.c[id] = { ok, total, ts: Date.now() }; this.bump(); this.save(); }
 };
 P.load();
 async function initCloud() {
@@ -434,6 +495,133 @@ function groupsOf(book) {
   if (rest.length) g.push({ t: "Другие главы", sh: "Другие", chs: rest });
   return g;
 }
+const STICKERS = [
+  { n: "сердце", x: "58%", y: "9%", mx: "4%", my: "14px", r: "-10deg", s: "70px", d: "0s",
+    svg: `<svg viewBox="0 0 64 64"><path d="M32 56C10 40 4 30 4 20 4 11 11 5 19 5c6 0 10 3 13 8 3-5 7-8 13-8 8 0 15 6 15 15 0 10-6 20-28 36z" fill="#e5484d"/><polyline points="10,28 22,28 26,19 31,37 36,24 40,28 54,28" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+    f: ["Боль в животе или спине + низкое давление = разрыв аневризмы брюшной аорты, пока не доказано обратное.", "Шайн, гл. 41, с. 474"] },
+  { n: "зуб", x: "88%", y: "36%", mx: "26%", my: "40px", r: "8deg", s: "62px", d: "-1.2s",
+    svg: `<svg viewBox="0 0 64 64"><path d="M14 12c4-5 11-5 18-1 7-4 14-4 18 1 5 6 2 16-1 22-2 5-2 14-5 20-2 4-6 3-7-1l-2-10c-1-3-5-3-6 0l-2 10c-1 4-5 5-7 1-3-6-3-15-5-20-3-6-6-16-1-22z" fill="#f8fafc" stroke="#94a3b8" stroke-width="2.5"/><path d="M20 17c3-2 6-2 9 0" stroke="#cbd5e1" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>`,
+    f: ["«Даже стоматолог может диагностировать классический аппендицит», — шутит Шайн. Но на каждый классический случай приходится два нетипичных.", "Шайн, гл. 28, с. 317"] },
+  { n: "капсула", x: "70%", y: "48%", mx: "48%", my: "12px", r: "0deg", s: "60px", d: "-2.4s",
+    svg: `<svg viewBox="0 0 64 64"><g transform="rotate(-40 32 32)"><path d="M18 22h14v20H18a10 10 0 0 1 0-20z" fill="#f97316"/><path d="M32 22h14a10 10 0 0 1 0 20H32z" fill="#2dd4bf"/><rect x="14" y="26" width="10" height="4" rx="2" fill="#fff" opacity=".6"/></g></svg>`,
+    f: ["Никакие антибиотики после операции не исправят ошибки техники и не вылечат гной, который нужно дренировать.", "Шайн, гл. 47, с. 522"] },
+  { n: "шприц", x: "80%", y: "4%", mx: "68%", my: "38px", r: "0deg", s: "66px", d: "-3.1s",
+    svg: `<svg viewBox="0 0 64 64"><g transform="rotate(45 32 32)"><rect x="26" y="4" width="12" height="6" rx="2" fill="#64748b"/><rect x="30" y="10" width="4" height="8" fill="#94a3b8"/><rect x="22" y="18" width="20" height="4" rx="2" fill="#64748b"/><rect x="25" y="22" width="14" height="28" rx="3" fill="#dbeafe" stroke="#3b82f6" stroke-width="2"/><rect x="27" y="34" width="10" height="14" rx="1" fill="#3b82f6"/><path d="M29 50h6l-2 5h-2z" fill="#64748b"/><rect x="31.2" y="55" width="1.6" height="8" fill="#94a3b8"/></g></svg>`,
+    f: ["Если пациенту нужна всего одна доза крови — значит, она ему не нужна совсем.", "Шайн, гл. 45, с. 509"] },
+  { n: "стетоскоп", x: "60%", y: "72%", mx: "82%", my: "10px", r: "-6deg", s: "66px", d: "-0.6s",
+    svg: `<svg viewBox="0 0 64 64"><path d="M16 6v14a14 14 0 0 0 28 0V6" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="16" cy="6" r="3.5" fill="#0f766e"/><circle cx="44" cy="6" r="3.5" fill="#0f766e"/><path d="M30 34v10a9 9 0 0 0 18 0v-4" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/><circle cx="48" cy="36" r="8" fill="#cbd5e1" stroke="#334155" stroke-width="3"/><circle cx="48" cy="36" r="3" fill="#334155"/></svg>`,
+    f: ["Осматривайте прооперированного больного сами — щупайте живот минимум дважды в день; записей и монитора в реанимации недостаточно.", "Шайн, гл. 45, с. 504"] },
+  { n: "пластырь", x: "88%", y: "72%", mx: "0%", my: "0px", r: "0deg", s: "62px", d: "-4s", dsk: true,
+    svg: `<svg viewBox="0 0 64 64"><g transform="rotate(-30 32 32)"><rect x="4" y="22" width="56" height="20" rx="10" fill="#fbbf77"/><rect x="22" y="22" width="20" height="20" fill="#fde2c4"/><g fill="#e8a25e"><circle cx="27" cy="27" r="1.4"/><circle cx="32" cy="27" r="1.4"/><circle cx="37" cy="27" r="1.4"/><circle cx="27" cy="32" r="1.4"/><circle cx="32" cy="32" r="1.4"/><circle cx="37" cy="32" r="1.4"/><circle cx="27" cy="37" r="1.4"/><circle cx="32" cy="37" r="1.4"/><circle cx="37" cy="37" r="1.4"/></g></g></svg>`,
+    f: ["Неосложнённой ушитой ране почти не нужен уход: через сутки её закрывает плёнка фибрина, и пациент может принимать душ.", "Шайн, гл. 55, с. 608"] },
+  { n: "скальпель", x: "72%", y: "24%", mx: "0%", my: "0px", r: "0deg", s: "60px", d: "-1.8s", dsk: true,
+    svg: `<svg viewBox="0 0 64 64"><g transform="rotate(-35 32 32)"><rect x="4" y="28" width="32" height="8" rx="3" fill="#0f766e"/><rect x="8" y="30.5" width="18" height="3" rx="1.5" fill="#5eead4"/><path d="M36 28h6c10 0 16 4 18 8H36z" fill="#e2e8f0" stroke="#64748b" stroke-width="1.5"/></g></svg>`,
+    f: ["При перекруте яичко выдерживает ишемию лишь 4–6 часов — поэтому «острую мошонку» оперируют сразу, не теряя времени.", "Шайн, гл. 34, с. 389"] },
+  { n: "ДНК", x: "94%", y: "6%", mx: "0%", my: "0px", r: "12deg", s: "54px", d: "-2.9s", dsk: true,
+    svg: `<svg viewBox="0 0 64 64"><path d="M20 4c0 12 24 16 24 28S20 48 20 60" fill="none" stroke="#8b5cf6" stroke-width="4" stroke-linecap="round"/><path d="M44 4c0 12-24 16-24 28s24 16 24 28" fill="none" stroke="#ec4899" stroke-width="4" stroke-linecap="round"/><g stroke="#c4b5fd" stroke-width="3" stroke-linecap="round"><line x1="23" y1="8" x2="41" y2="8"/><line x1="26" y1="26" x2="38" y2="26"/><line x1="26" y1="38" x2="38" y2="38"/><line x1="23" y1="56" x2="41" y2="56"/></g></svg>`,
+    f: ["Принципы врождённого иммунитета одинаковы у человека, плодовой мушки и морского моллюска.", "Шайн, гл. 54, с. 602"] },
+  { n: "капля крови", x: "90%", y: "54%", mx: "0%", my: "0px", r: "-8deg", s: "50px", d: "-3.6s", dsk: true,
+    svg: `<svg viewBox="0 0 64 64"><path d="M32 4C24 18 14 28 14 40a18 18 0 0 0 36 0C50 28 40 18 32 4z" fill="#dc2626"/><path d="M23 40a9 9 0 0 0 7 9" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round" opacity=".8"/></svg>`,
+    f: ["Как минимум каждая десятая хирургическая смерть связана с кровотечением.", "Шайн, гл. 56, с. 612"] },
+  { n: "микроскоп", x: "79%", y: "50%", mx: "0%", my: "0px", r: "4deg", s: "58px", d: "-5s", dsk: true,
+    svg: `<svg viewBox="0 0 64 64"><rect x="12" y="54" width="40" height="6" rx="3" fill="#334155"/><path d="M40 54c9-4 11-13 6-21" fill="none" stroke="#334155" stroke-width="4" stroke-linecap="round"/><g transform="rotate(-25 30 24)"><rect x="24" y="8" width="10" height="26" rx="3" fill="#0ea5e9"/><rect x="22" y="4" width="14" height="6" rx="2" fill="#334155"/><rect x="26" y="34" width="6" height="6" fill="#334155"/></g><rect x="18" y="44" width="24" height="4" rx="2" fill="#64748b"/></svg>`,
+    f: ["Удалённый червеобразный отросток обязательно отправляют на гистологию: опухоли аппендикса находят у 1–2 % оперированных.", "Затевахин, гл. 9, с. 129"] }
+];
+const WISDOM = [
+  ["Лучше оставить кусочек брюшины на кишке, чем кусочек кишки на брюшине.", "Шайн, гл. 48"],
+  ["Пока живот открыт — вы контролируете его; как только закрыт — он контролирует вас.", "Шайн, гл. 44"],
+  ["Негативная релапаротомия лучше, чем позитивная аутопсия.", "Шайн, гл. 52"],
+  ["Лечи больного, а не оружие.", "Шайн, гл. 38"],
+  ["Операция закончена, когда пациент ест чизбургер и не может вспомнить твоего имени.", "Лео Гордон · Шайн, гл. 45"],
+  ["Самый важный из факторов свёртывания — хирург.", "Шайн, гл. 56"],
+  ["Хорошие хирурги отлично оперируют; великие знают, как лечить свои осложнения.", "Шайн, гл. 50"],
+  ["Мыло, вода и здравый смысл — лучшие дезинфицирующие средства.", "Уильям Ослер · Шайн, гл. 55"],
+  ["Кожа — лучшая повязка.", "Джозеф Листер · Шайн, гл. 55"],
+  ["Совсем без дренажей лучше, чем с их бестолковым применением.", "Уильям Холстед · Шайн, гл. 42"],
+  ["Обычно вторая ошибка в ответ на первую убивает пациента.", "Клиффорд Медор · Шайн, гл. 59"],
+  ["Ищите пневмонию внутри живота.", "Шайн, гл. 52"]
+];
+const RANKS = [[0, "Студент", "📚"], [50, "Интерн", "🩺"], [200, "Ординатор", "🧪"], [500, "Хирург", "🏥"], [1000, "Заведующий отделением", "⭐"], [1700, "Профессор", "🏆"]];
+const dayNum = () => { const d = new Date(); return Math.floor((d.getTime() - d.getTimezoneOffset() * 60000) / 86400000); };
+function activityDays() {
+  const days = new Set(Object.keys(P.data.days || {}));
+  for (const k of ["q", "c"]) for (const id in P.data[k]) { const e = P.data[k][id]; if (e && e.ts) days.add(dayKey(e.ts)); }
+  return days;
+}
+function streak() {
+  const days = activityDays(); let n = 0; const d = new Date();
+  if (!days.has(dayKey(d.getTime()))) d.setDate(d.getDate() - 1);
+  while (days.has(dayKey(d.getTime()))) { n++; d.setDate(d.getDate() - 1); }
+  return n;
+}
+function confetti(host) {
+  const box = document.createElement("div"); box.className = "confetti";
+  const cols = ["#e5484d", "#f97316", "#facc15", "#22c55e", "#0ea5e9", "#8b5cf6", "#ec4899", "#14a39a"];
+  for (let i = 0; i < 34; i++) {
+    const p = document.createElement("i"), a = Math.random() * Math.PI * 2, r = 80 + Math.random() * 140;
+    if (i % 4 === 0) { p.className = "plus"; p.textContent = "+"; }
+    p.style.setProperty("--c", cols[i % cols.length]); p.style.setProperty("--dx", `${Math.cos(a) * r}px`);
+    p.style.setProperty("--dy", `${Math.sin(a) * r - 40}px`); p.style.setProperty("--rot", `${Math.random() * 720 - 360}deg`);
+    p.style.animationDelay = `${Math.random() * 0.12}s`; box.appendChild(p);
+  }
+  host.appendChild(box); setTimeout(() => box.remove(), 1400);
+}
+let qdayPick = null;
+async function renderQday(random) {
+  const box = $("#qday"); if (!box) return;
+  const ids = []; for (const b of S.index.books) for (const c of b.chapters) if (c.nq) ids.push(c.id);
+  let chId, qi;
+  if (random) { chId = ids[Math.floor(Math.random() * ids.length)]; qi = null; }
+  else if (qdayPick) { chId = qdayPick.ch; qi = qdayPick.i; }
+  else { const n = dayNum(); chId = ids[(n * 37) % ids.length]; qi = (n * 7) % S.chById[chId].nq; }
+  const ch = await loadChapter(chId);
+  let list = ch.q.filter(q => !q.m); if (!list.length) list = ch.q;
+  if (qi === null) qi = Math.floor(Math.random() * list.length);
+  qi = qi % list.length; qdayPick = { ch: chId, i: qi };
+  const q = list[qi], order = shuffle(q.o.map((_, i) => i)), meta = S.chById[chId];
+  if (!$("#qday")) return;
+  box.innerHTML = `<span class="tag">⚡ ${random ? "Случайный вопрос" : "Вопрос дня"}</span>
+    <div class="qtext">${esc(cleanQ(q.q))}</div>
+    <div class="opts">${order.map((oi, k) => `<button class="opt" data-oi="${oi}"><span class="k">${LET[k]}</span><span>${esc(q.o[oi].x)}</span></button>`).join("")}</div>
+    <div id="qdfb"></div>
+    <div class="row"><button class="btn sm" id="qdNext">🎲 Другой вопрос</button><a class="btn sm ghost" href="#${chId}">Глава: ${esc(S.bookOf[chId].short)}, гл. ${esc(meta.n)}</a></div>`;
+  box.querySelectorAll("[data-oi]").forEach(b => b.onclick = () => {
+    const oi = +b.dataset.oi, ok = !!q.o[oi].c;
+    box.querySelectorAll("[data-oi]").forEach(x => { x.disabled = true; const o = q.o[+x.dataset.oi]; if (o.c) x.classList.add("right"); else if (x === b) x.classList.add("wrong"); });
+    const why = !ok && q.o[oi].n ? `<p><span class="lab">Почему не так:</span> ${esc(q.o[oi].n)}</p>` : "";
+    $("#qdfb").innerHTML = `<div class="fb ${ok ? "ok" : "bad"}"><span class="verdict">${ok ? "Верно! 🎉" : "Не совсем"}</span>${why}<p>${esc(q.e)}</p><span class="src">${esc(srcLine(q.ch, q.p))}</span></div>`;
+    P.rec(q.id, ok); renderLevel();
+    if (ok) confetti(box);
+  });
+  $("#qdNext").onclick = () => renderQday(true);
+}
+function renderLevel() {
+  const box = $("#level"); if (!box) return;
+  let right = 0, ans = 0, tq = 0;
+  for (const b of S.index.books) for (const c of b.chapters) { const s = chStats(c); right += s.right; ans += s.right + s.wrong; tq += c.nq; }
+  let i = 0; while (i + 1 < RANKS.length && right >= RANKS[i + 1][0]) i++;
+  const cur = RANKS[i], next = RANKS[i + 1];
+  const pct = next ? Math.round((right - cur[0]) / (next[0] - cur[0]) * 100) : 100;
+  const st = streak(), today = (P.data.days || {})[dayKey(Date.now())] || 0, mist = allMistakes().length;
+  box.innerHTML = `<div class="rank"><span class="badge">${cur[2]}</span><span><span class="small muted">Ваш уровень</span><b>${cur[1]}</b></span></div>
+    <div class="lvbar" aria-hidden="true"><i style="width:${pct}%"></i></div>
+    <span class="small muted">${next ? `Верных ответов: ${right}. До уровня «${next[1]}» — ещё ${next[0] - right}.` : `Верных ответов: ${right}. Высший уровень!`}</span>
+    <div class="stats">
+      <div class="stat"><b>${st ? `🔥 ${st}` : "—"}</b><span>${st ? `${plural(st, ["день", "дня", "дней"])} подряд` : "начните серию сегодня"}</span></div>
+      <div class="stat"><b>${today}</b><span>${plural(today, ["ответ", "ответа", "ответов"])} сегодня</span></div>
+      <div class="stat"><b>${ans}/${tq}</b><span>решено вопросов</span></div>
+      <a class="stat" href="#mistakes" style="text-decoration:none;color:inherit"><b>${mist}</b><span>${plural(mist, ["ошибка ждёт", "ошибки ждут", "ошибок ждут"])} разбора →</span></a>
+    </div>
+    <a class="small" href="#stats">Подробная статистика →</a>`;
+}
+let wisdomI = null;
+function renderWisdom(next) {
+  const box = $("#wisdom"); if (!box) return;
+  if (wisdomI === null) wisdomI = dayNum() % WISDOM.length; else if (next) wisdomI = (wisdomI + 1) % WISDOM.length;
+  const [t, w] = WISDOM[wisdomI];
+  box.innerHTML = `<span class="qm" aria-hidden="true">“</span><p>${esc(t)}<span class="who">— ${esc(w)}</span></p><button class="btn sm ghost" id="wNext" title="Следующая мудрость">↻</button>`;
+  $("#wNext").onclick = () => renderWisdom(true);
+}
 function viewHome() {
   let tq = 0, tc = 0, ans = 0, right = 0;
   for (const b of S.index.books) for (const c of b.chapters) { tq += c.nq; tc += c.nc; const s = chStats(c); ans += s.right + s.wrong; right += s.right; }
@@ -449,18 +637,26 @@ function viewHome() {
   const lastMeta = last && S.chById[last.ch];
   app.innerHTML = `
   <div class="stack">
-    <div class="hero">
-      <h1>Тесты и клинические задачи по неотложной хирургии</h1>
-      <p class="note">${tq} ${plural(tq, ["вопрос", "вопроса", "вопросов"])} и ${tc} ${plural(tc, ["задача", "задачи", "задач"])} по двум книгам. После каждого ответа — разбор и страница книги.</p>
-    </div>
-    <details class="howto"${fresh ? " open" : ""}><summary>Как заниматься</summary>${steps}</details>
-    <section class="card quick">
-      ${lastMeta ? `<a class="btn primary" href="#${last.ch}">▶ Продолжить: ${esc(S.bookOf[last.ch].short)}, гл. ${esc(lastMeta.n)} «${esc(lastMeta.title)}»</a>` : ""}
-      <a class="btn" href="#ask">Задать вопрос</a>
-      <a class="btn" href="#mixed">Смешанный тест</a>
-      <a class="btn" href="#mistakes"><span class="lg-only">Работа над ошибками</span><span class="sm-only">Ошибки</span>${mist ? ` <span class="pill bad">${mist}</span>` : ""}</a>
-      <span class="summary">${ans ? `Решено ${ans} из ${tq} · верно ${Math.round(right / ans * 100)}%` : "Вы ещё не решали тесты"}</span>
+    <section class="banner">
+      ${STICKERS.map((k, i) => `<button class="stk${k.dsk ? " dsk" : ""}" data-stk="${i}" aria-label="Стикер «${k.n}»: нажмите, чтобы узнать факт" style="--x:${k.x};--y:${k.y};--mx:${k.mx};--my:${k.my};--r:${k.r};--s:${k.s};--d:${k.d}">${k.svg}</button>`).join("")}
+      <div class="txt">
+        <span class="eyebrow">Тренажёр · неотложная хирургия</span>
+        <h1>Решай тесты и клинические задачи как настоящий хирург</h1>
+        <p>${tq} ${plural(tq, ["вопрос", "вопроса", "вопросов"])} и ${tc} ${plural(tc, ["задача", "задачи", "задач"])} по учебникам Затевахина и Шайна. После каждого ответа — разбор и страница книги.</p>
+        <div class="cta">
+          ${lastMeta ? `<a class="btn light" href="#${last.ch}">▶ Продолжить: гл. ${esc(lastMeta.n)} «${esc(lastMeta.title.length > 32 ? lastMeta.title.slice(0, 30) + "…" : lastMeta.title)}»</a>` : `<button class="btn light" id="toTopics">▶ Начать решать</button>`}
+          <a class="btn" href="#ask">💬 Задать вопрос</a>
+          <a class="btn" href="#mixed">🎲 Смешанный тест</a>
+        </div>
+      </div>
+      <div class="fact" id="fact"><b>👆 Нажмите на любой стикер</b> — узнаете интересный факт из учебников.</div>
     </section>
+    <div class="duo">
+      <section class="card qday" id="qday"><span class="tag">⚡ Вопрос дня</span><p class="muted" style="margin:0">Загружаю вопрос…</p></section>
+      <section class="card level" id="level"></section>
+    </div>
+    <section class="card wisdom" id="wisdom"></section>
+    <details class="howto"${fresh ? " open" : ""}><summary>Как заниматься</summary>${steps}</details>
     <div class="search">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
       <input id="hq" type="search" autocomplete="off" placeholder="Найти тему: аппендицит, кровотечение, травма…" aria-label="Поиск по темам обеих книг" value="${esc(homeQuery)}">
@@ -509,6 +705,13 @@ function viewHome() {
     jump.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { const el = document.getElementById(b.dataset.jump); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); });
   };
   renderList();
+  renderLevel(); renderWisdom(false); renderQday(false).catch(() => { const b = $("#qday"); if (b) b.innerHTML = `<span class="tag">⚡ Вопрос дня</span><p class="muted">Не удалось загрузить вопрос.</p>`; });
+  app.querySelectorAll("[data-stk]").forEach(b => b.onclick = () => {
+    const k = STICKERS[+b.dataset.stk];
+    $("#fact").innerHTML = `<b>💡 Знаете ли вы?</b> ${esc(k.f[0])}<span class="fsrc">${esc(k.f[1])}</span>`;
+    b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop");
+  });
+  const tt = $("#toTopics"); if (tt) tt.onclick = () => $("#hq").scrollIntoView({ behavior: "smooth", block: "center" });
   const inp = $("#hq");
   inp.oninput = () => { homeQuery = inp.value; renderList(); };
   inp.onkeydown = e => { if (e.key === "Escape") { inp.value = ""; homeQuery = ""; renderList(); } };
