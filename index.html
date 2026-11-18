@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Тренажёр по неотложной хирургии</title>
+<meta name="description" content="Тесты и клинические задачи по неотложной абдоминальной хирургии: 2097 вопросов и 79 задач по руководству под ред. Затевахина и книге Шайна, с разбором ошибок и ссылками на страницы.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Тренажёр по неотложной хирургии">
+<meta property="og:description" content="2097 вопросов и 79 клинических задач по двум книгам. Разбор каждой ошибки со ссылкой на страницу.">
+<meta name="theme-color" content="#0b6b7c">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230b6b7c'/%3E%3Cpath d='M27 13h10v14h14v10H37v14H27V37H13V27h14z' fill='white'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=Unbounded:wght@500;600&display=swap" rel="stylesheet">
@@ -147,6 +153,60 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
 .chpick{max-height:340px;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:6px 10px;background:var(--bg)}
 .note{font-size:.88rem;color:var(--muted);max-width:70ch}
 .sync{font-size:.8rem;color:var(--muted)}
+nav.tabs .cnt[hidden]{display:none}
+@media (min-width:641px){.top .wrap{flex-wrap:nowrap} nav.tabs{flex-wrap:nowrap;gap:2px} nav.tabs a{padding:6px 11px;white-space:nowrap}}
+.sm-only{display:none}
+@media (max-width:640px){
+  .top .wrap{gap:6px;padding-top:8px;padding-bottom:6px}
+  nav.tabs{margin-left:0;width:100%;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}
+  nav.tabs::-webkit-scrollbar{display:none}
+  nav.tabs a{white-space:nowrap;padding:6px 8px;font-size:.86rem}
+  nav.tabs{justify-content:space-between}
+  .lg-only{display:none} .sm-only{display:inline}
+}
+/* главная */
+.hero{display:flex;flex-direction:column;gap:6px}
+.hero p{margin:0}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:0;padding:0;list-style:none;counter-reset:st}
+.steps li{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:10px 12px 10px 44px;position:relative;font-size:.9rem;line-height:1.4}
+.steps li::before{counter-increment:st;content:counter(st);position:absolute;left:12px;top:10px;width:22px;height:22px;border-radius:50%;background:var(--accent);color:var(--accent-ink);font-weight:700;font-size:.8rem;display:flex;align-items:center;justify-content:center}
+.steps b{font-weight:600}
+@media (max-width:640px){.steps{grid-template-columns:1fr}}
+details.howto summary{cursor:pointer;color:var(--accent);font-weight:500;font-size:.92rem;padding:2px 0}
+details.howto[open] summary{margin-bottom:8px}
+.quick{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:14px}
+.quick .btn{padding:10px 14px}
+.quick .btn.primary{max-width:100%;white-space:normal;text-align:left}
+.quick .summary{font-size:.86rem;color:var(--muted);margin-left:auto}
+@media (max-width:640px){.quick{padding:12px}.quick .btn{flex:1 1 calc(50% - 4px);justify-content:center;padding:9px 10px;font-size:.92rem}.quick .btn.primary{flex-basis:100%;justify-content:flex-start}.quick .summary{margin-left:0;width:100%}.steps li{padding:8px 10px 8px 40px;font-size:.86rem}.steps li::before{left:10px;top:8px}.bookseg button{padding:9px 12px}}
+.search{position:relative}
+.search input{width:100%;padding:12px 14px 12px 42px;border:1px solid var(--line);border-radius:var(--r);background:var(--surface);font-size:1rem}
+.search input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.search svg{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:var(--muted);pointer-events:none}
+.bookseg{display:grid;grid-template-columns:1fr 1fr;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--surface)}
+.bookseg button{border:0;background:transparent;padding:10px 14px;cursor:pointer;text-align:left;display:flex;flex-direction:column;gap:2px;min-width:0}
+.bookseg button+button{border-left:1px solid var(--line)}
+.bookseg b{font-family:var(--f-display);font-size:.95rem;font-weight:600}
+.bookseg span{font-size:.8rem;color:var(--muted);line-height:1.3}
+.bookseg button[aria-pressed="true"]{background:var(--accent)}
+.bookseg button[aria-pressed="true"] b,.bookseg button[aria-pressed="true"] span{color:var(--accent-ink)}
+.bookinfo{font-size:.82rem;color:var(--muted);margin:-8px 0 0}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+@media (max-width:640px){.chips{flex-wrap:nowrap;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}.chips::-webkit-scrollbar{display:none}}
+.chips .lbl{flex:0 0 auto;font-size:.82rem;color:var(--muted);align-self:center;margin-right:2px}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-size:.85rem;cursor:pointer;white-space:nowrap;color:var(--ink)}
+.chip:hover{border-color:var(--accent)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.chip .c{opacity:.65;margin-left:5px;font-variant-numeric:tabular-nums}
+.sect{scroll-margin-top:96px;display:flex;flex-direction:column;gap:8px}
+.secthead{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap}
+.secthead h2{font-size:1rem}
+.secthead .meta{font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.ch .side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right}
+.ch .bk{font-size:.78rem;color:var(--accent);font-weight:600;margin-right:6px}
+.ch mark{background:var(--warn-soft);color:inherit;border-radius:3px;padding:0 1px}
+@media (max-width:560px){.ch{grid-template-columns:2.4em 1fr}.ch .side{grid-column:2;flex-direction:row;flex-wrap:wrap;align-items:center;gap:8px;text-align:left}}
+.empty-res{color:var(--muted)}
 @media (prefers-reduced-motion: reduce){*{transition:none!important}}
 </style>
 </head>
@@ -156,8 +216,8 @@ td.n{font-variant-numeric:tabular-nums;white-space:nowrap}
     <a class="brand" href="#start"><i></i>Тренажёр по неотложной хирургии</a>
     <nav class="tabs" aria-label="Разделы">
       <a href="#start" data-nav="start">Темы</a>
-      <a href="#mixed" data-nav="mixed">Смешанный тест</a>
-      <a href="#mistakes" data-nav="mistakes">Работа над ошибками<span class="cnt" id="mistakeCnt" hidden></span></a>
+      <a href="#mixed" data-nav="mixed"><span class="lg-only">Смешанный тест</span><span class="sm-only">Смешанный</span></a>
+      <a href="#mistakes" data-nav="mistakes"><span class="lg-only">Работа над ошибками</span><span class="sm-only">Ошибки</span><span class="cnt" id="mistakeCnt" hidden></span></a>
       <a href="#stats" data-nav="stats">Статистика</a>
     </nav>
   </div>
@@ -274,7 +334,7 @@ async function route() {
   if (h === "mistakes") { setNav("mistakes"); return viewMistakes(); }
   if (h === "stats") { setNav("stats"); return viewStats(); }
   if (S.chById[h]) { setNav("start"); return viewChapter(h); }
-  if (h === "schein" || h === "zatev") S.book = h;
+  if (h === "schein" || h === "zatev") { S.book = h; ui.book = h; saveUi(); }
   setNav("start"); return viewHome();
 }
 window.addEventListener("hashchange", route);
@@ -285,41 +345,166 @@ document.addEventListener("click", e => {
 });
 
 /* ---------- главная ---------- */
+const GROUPS = {
+  zatev: [
+    ["Организация помощи и общие вопросы", "Общие вопросы", ["z1", "z2", "z3"]],
+    ["Кровотечения", "Кровотечения", ["z4", "z5", "z6", "z7", "z8"]],
+    ["Острые заболевания и перитонит", "Аппендицит, язва, грыжа, перитонит", ["z9", "z10", "z11", "z12", "z13"]],
+    ["Кишечник", "Кишечник", ["z14", "z15", "z16", "z17", "z18"]],
+    ["Печень, желчные пути, поджелудочная железа", "Желчь и поджелудочная", ["z19", "z20", "z21", "z22"]],
+    ["Травма живота", "Травма", ["z23", "z24", "z25", "z26", "z27"]],
+    ["Послеоперационные осложнения", "Послеоперационные осложнения", ["z28", "z29", "z30", "z31"]],
+    ["Гинекология, беременность, дети, урология", "Смежные специальности", ["z32", "z33", "z34", "z35"]]
+  ],
+  schein: [
+    ["Общие принципы и подготовка к операции", "Общие принципы", ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9"]],
+    ["Операция: разрез, ревизия, перитонит, анастомозы, стомы", "Ход операции", ["s10", "s11", "s12", "s13", "s14"]],
+    ["Пищевод, диафрагма, желудок и двенадцатиперстная кишка", "Пищевод и желудок", ["s15", "s16", "s17", "s18"]],
+    ["Поджелудочная железа и желчные пути", "Желчь и поджелудочная", ["s19", "s20.1", "s20.2", "s20.3"]],
+    ["Кишечник, грыжи, аппендицит, аноректальная зона", "Кишечник и грыжи", ["s21", "s22", "s23", "s24", "s25", "s26", "s27", "s28", "s29"]],
+    ["Осложнения процедур и особые пациенты", "Особые пациенты", ["s30", "s31", "s32", "s33", "s34", "s35", "s36", "s37"]],
+    ["Травма и сосуды", "Травма и аорта", ["s38", "s39", "s40", "s41"]],
+    ["Завершение операции и послеоперационный период", "После операции", ["s42", "s43", "s44", "s45", "s46", "s47", "s48", "s49"]],
+    ["Осложнения, повторные операции, лапароскопия", "Осложнения и лапароскопия", ["s50", "s51", "s52", "s53", "s54", "s55", "s56", "s57", "s58", "s59"]]
+  ]
+};
+const UI_KEY = "surg-trainer-ui-v1";
+const ui = (() => { try { return Object.assign({ book: null, filter: "all" }, JSON.parse(localStorage.getItem(UI_KEY) || "{}")); } catch (e) { return { book: null, filter: "all" }; } })();
+function saveUi() { try { localStorage.setItem(UI_KEY, JSON.stringify(ui)); } catch (e) {} }
+const FILTERS = [["all", "Все главы"], ["cases", "С задачами"], ["new", "Не начатые"], ["bad", "С ошибками"]];
+let homeQuery = "";
+const norm = t => String(t || "").toLowerCase().replace(/ё/g, "е");
+function chStatus(c) {
+  const s = chStats(c), done = s.right + s.wrong;
+  if (!c.nq) return { key: "none", html: "" };
+  if (!done) return { key: "new", html: `<span class="pill">не начата</span>` };
+  if (s.wrong) return { key: "bad", html: `<span class="pill bad">${s.wrong} ${plural(s.wrong, ["ошибка", "ошибки", "ошибок"])}</span>` };
+  if (done >= c.nq) return { key: "done", html: `<span class="pill ok">пройдена ✓</span>` };
+  return { key: "prog", html: `<span class="pill acc">решено ${Math.round(done / c.nq * 100)}%</span>` };
+}
+function passFilter(c) {
+  const k = chStatus(c).key;
+  if (ui.filter === "cases") return c.nc > 0;
+  if (ui.filter === "new") return k === "new";
+  if (ui.filter === "bad") return k === "bad";
+  return true;
+}
+function lastActivity() {
+  let best = null;
+  for (const k of ["q", "c"]) for (const id in P.data[k]) {
+    const e = P.data[k][id], ch = chOfQ(id);
+    if (e && e.ts && S.chById[ch] && (!best || e.ts > best.ts)) best = { ts: e.ts, ch };
+  }
+  return best;
+}
+function highlight(title, q) {
+  if (!q) return esc(title);
+  const i = norm(title).indexOf(q);
+  if (i < 0) return esc(title);
+  return esc(title.slice(0, i)) + "<mark>" + esc(title.slice(i, i + q.length)) + "</mark>" + esc(title.slice(i + q.length));
+}
+function chRow(c, q, showBook) {
+  const s = chStats(c), st = chStatus(c), empty = !c.nq && !c.nc;
+  const g = c.nq ? s.right / c.nq * 100 : 0, r = c.nq ? s.wrong / c.nq * 100 : 0;
+  return `<a class="ch${empty ? " empty" : ""}" href="#${c.id}">
+    <span class="num">${esc(c.n)}</span>
+    <span>${showBook ? `<span class="bk">${esc(S.bookOf[c.id].short)}</span>` : ""}<span class="t">${highlight(c.title, q)}</span>
+      ${empty ? `<span class="meta"> · готовится</span>` : `<span class="bar" aria-hidden="true"><i class="g" style="width:${g}%"></i><i class="r" style="width:${r}%"></i></span>`}</span>
+    <span class="side">${st.html}<span class="meta">${empty ? "" : `${c.nq} ${plural(c.nq, ["вопрос", "вопроса", "вопросов"])}${c.nc ? ` · ${c.nc} ${plural(c.nc, ["задача", "задачи", "задач"])}` : ""}`}</span></span>
+  </a>`;
+}
+function groupsOf(book) {
+  const g = (GROUPS[book.id] || []).map(([t, sh, ids]) => ({ t, sh, chs: ids.map(id => S.chById[id]).filter(Boolean) }));
+  const used = new Set(g.flatMap(x => x.chs.map(c => c.id)));
+  const rest = book.chapters.filter(c => !used.has(c.id));
+  if (rest.length) g.push({ t: "Другие главы", sh: "Другие", chs: rest });
+  return g;
+}
 function viewHome() {
   let tq = 0, tc = 0, ans = 0, right = 0;
   for (const b of S.index.books) for (const c of b.chapters) { tq += c.nq; tc += c.nc; const s = chStats(c); ans += s.right + s.wrong; right += s.right; }
   const mist = allMistakes().length;
   const book = S.index.books.find(b => b.id === S.book) || S.index.books[0];
+  const last = lastActivity();
+  const fresh = !ans && !Object.keys(P.data.c).length;
+  const steps = `<ol class="steps">
+    <li><b>Выберите тему.</b> Переключите книгу или найдите тему поиском — главы разбиты на разделы.</li>
+    <li><b>Решайте.</b> В главе — тест («Обучение» с разбором сразу или «Контроль») и клинические задачи.</li>
+    <li><b>Исправляйте ошибки.</b> Неверные ответы собираются в «Работе над ошибками».</li>
+  </ol>`;
+  const lastMeta = last && S.chById[last.ch];
   app.innerHTML = `
   <div class="stack">
-    <div class="stack" style="gap:6px">
-      <h1>Тесты и клинические задачи по двум книгам</h1>
-      <p class="note">Выберите книгу и главу. В режиме «Обучение» разбор появляется сразу после ответа, в режиме «Контроль» — в конце. Каждый неверный ответ попадает в «Работу над ошибками».</p>
+    <div class="hero">
+      <h1>Тесты и клинические задачи по неотложной хирургии</h1>
+      <p class="note">${tq} ${plural(tq, ["вопрос", "вопроса", "вопросов"])} и ${tc} ${plural(tc, ["задача", "задачи", "задач"])} по двум книгам. После каждого ответа — разбор и страница книги.</p>
     </div>
-    <div class="tiles">
-      <div class="tile"><b>${tq}</b><span>${plural(tq, ["вопрос", "вопроса", "вопросов"])} в базе</span></div>
-      <div class="tile"><b>${tc}</b><span>${plural(tc, ["задача", "задачи", "задач"])}</span></div>
-      <div class="tile"><b>${ans ? Math.round(right / ans * 100) + "%" : "—"}</b><span>верных (последний ответ)</span></div>
-      <div class="tile"><b>${mist}</b><span>ждут работы над ошибками</span></div>
+    <details class="howto"${fresh ? " open" : ""}><summary>Как заниматься</summary>${steps}</details>
+    <section class="card quick">
+      ${lastMeta ? `<a class="btn primary" href="#${last.ch}">▶ Продолжить: ${esc(S.bookOf[last.ch].short)}, гл. ${esc(lastMeta.n)} «${esc(lastMeta.title)}»</a>` : ""}
+      <a class="btn" href="#mixed">Смешанный тест</a>
+      <a class="btn" href="#mistakes"><span class="lg-only">Работа над ошибками</span><span class="sm-only">Ошибки</span>${mist ? ` <span class="pill bad">${mist}</span>` : ""}</a>
+      <span class="summary">${ans ? `Решено ${ans} из ${tq} · верно ${Math.round(right / ans * 100)}%` : "Вы ещё не решали тесты"}</span>
+    </section>
+    <div class="search">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="hq" type="search" autocomplete="off" placeholder="Найти тему: аппендицит, кровотечение, травма…" aria-label="Поиск по темам обеих книг" value="${esc(homeQuery)}">
     </div>
-    <div class="booktabs" role="group" aria-label="Книга">
-      ${S.index.books.map(b => `<button class="booktab" data-book="${b.id}" aria-pressed="${b.id === book.id}"><b>${esc(b.title)}</b><span>${esc(b.sub)}</span></button>`).join("")}
+    <div class="bookseg" role="group" aria-label="Книга">
+      ${S.index.books.map(b => `<button data-book="${b.id}" aria-pressed="${b.id === book.id}"><b>${esc(b.short)}</b><span><span class="lg-only">${esc(b.title)} · </span>${b.chapters.length} ${plural(b.chapters.length, ["глава", "главы", "глав"])}</span></button>`).join("")}
     </div>
-    <div class="chlist">
-      ${book.chapters.map(c => {
-        const s = chStats(c); const empty = !c.nq && !c.nc;
-        const g = c.nq ? s.right / c.nq * 100 : 0, r = c.nq ? s.wrong / c.nq * 100 : 0;
-        return `<a class="ch${empty ? " empty" : ""}" href="#${c.id}">
-          <span class="num">${esc(c.n)}</span>
-          <span><span class="t">${esc(c.title)}</span>
-            ${empty ? `<span class="meta"> · готовится</span>` : `<span class="bar" aria-hidden="true"><i class="g" style="width:${g}%"></i><i class="r" style="width:${r}%"></i></span>`}</span>
-          <span class="meta">${empty ? "" : `${c.nq} ${plural(c.nq, ["вопрос", "вопроса", "вопросов"])}${c.nc ? ` · ${c.nc} ${plural(c.nc, ["задача", "задачи", "задач"])}` : ""}`}</span>
-        </a>`;
-      }).join("")}
+    <p class="bookinfo" id="bookinfo">${esc(book.sub)}</p>
+    <div class="chips" id="flt" role="group" aria-label="Показать главы">
+      ${FILTERS.map(([k, t]) => `<button class="chip" data-f="${k}" aria-pressed="${ui.filter === k}">${t}</button>`).join("")}
     </div>
+    <div class="chips" id="jump" aria-label="Перейти к разделу"></div>
+    <div class="stack" id="hlist"></div>
     <p class="sync" id="syncNote">${esc(P.status || "Прогресс сохраняется в этом браузере")}</p>
   </div>`;
-  app.querySelectorAll("[data-book]").forEach(b => b.onclick = () => { S.book = b.dataset.book; viewHome(); });
+  const renderList = () => {
+    const q = norm(homeQuery.trim());
+    const list = $("#hlist"), jump = $("#jump");
+    $("#bookinfo").textContent = q ? "Поиск идёт по обеим книгам." : book.sub;
+    if (q) {
+      jump.hidden = true;
+      const direct = [], viaGroup = [];
+      for (const b of S.index.books) {
+        const inGroup = new Set(groupsOf(b).filter(g => norm(g.t).includes(q)).flatMap(g => g.chs.map(c => c.id)));
+        for (const c of b.chapters) {
+          if (!passFilter(c)) continue;
+          if (norm(c.title).includes(q) || norm(c.n) === q) direct.push(c); else if (inGroup.has(c.id)) viaGroup.push(c);
+        }
+      }
+      list.innerHTML = (direct.length || viaGroup.length)
+        ? (direct.length ? `<div class="secthead"><h2>Главы: ${direct.length}</h2></div><div class="chlist">${direct.map(c => chRow(c, q, true)).join("")}</div>` : "")
+          + (viaGroup.length ? `<div class="secthead"><h2>Из разделов по этой теме: ${viaGroup.length}</h2></div><div class="chlist">${viaGroup.map(c => chRow(c, "", true)).join("")}</div>` : "")
+        : `<div class="card empty-res">По запросу «${esc(homeQuery.trim())}» ничего не найдено${ui.filter !== "all" ? " с этим фильтром" : ""}. Попробуйте другое слово, например «кровотечение», «панкреатит» или «травма».</div>`;
+      return;
+    }
+    const groups = groupsOf(book).map((g, i) => ({ ...g, i, vis: g.chs.filter(passFilter) })).filter(g => g.vis.length);
+    jump.hidden = groups.length < 2;
+    jump.innerHTML = `<span class="lbl">Разделы:</span>` + groups.map(g => `<button class="chip" data-jump="g${g.i}">${esc(g.sh)}<span class="c">${g.vis.length}</span></button>`).join("");
+    list.innerHTML = groups.length ? groups.map(g => {
+      let nq = 0, done = 0; for (const c of g.chs) { const s = chStats(c); nq += c.nq; done += s.right + s.wrong; }
+      return `<section class="sect" id="g${g.i}">
+        <div class="secthead"><h2>${esc(g.t)}</h2><span class="meta">${g.chs.length} ${plural(g.chs.length, ["глава", "главы", "глав"])} · решено ${nq ? Math.round(done / nq * 100) : 0}%</span></div>
+        <div class="chlist">${g.vis.map(c => chRow(c, "", false)).join("")}</div>
+      </section>`;
+    }).join("") : `<div class="card empty-res">${ui.filter === "bad" ? "Глав с ошибками нет — отлично!" : ui.filter === "new" ? "Все главы этой книги уже начаты." : "Глав не найдено."}</div>`;
+    jump.querySelectorAll("[data-jump]").forEach(b => b.onclick = () => { const el = document.getElementById(b.dataset.jump); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); });
+  };
+  renderList();
+  const inp = $("#hq");
+  inp.oninput = () => { homeQuery = inp.value; renderList(); };
+  inp.onkeydown = e => { if (e.key === "Escape") { inp.value = ""; homeQuery = ""; renderList(); } };
+  app.querySelectorAll("#flt [data-f]").forEach(b => b.onclick = () => {
+    ui.filter = b.dataset.f; saveUi();
+    app.querySelectorAll("#flt [data-f]").forEach(x => x.setAttribute("aria-pressed", x === b)); renderList();
+  });
+  app.querySelectorAll("[data-book]").forEach(b => b.onclick = () => {
+    S.book = b.dataset.book; ui.book = S.book; saveUi(); homeQuery = "";
+    if (location.hash === "#" + S.book) viewHome(); else location.hash = S.book;
+  });
 }
 
 /* ---------- глава ---------- */
@@ -676,6 +861,7 @@ function viewStats() {
 /* ---------- старт ---------- */
 (async () => {
   try { await loadIndex(); } catch (e) { app.innerHTML = `<p>Не удалось загрузить список тем. Обновите страницу.</p>`; return; }
+  if (ui.book && S.index.books.some(b => b.id === ui.book)) S.book = ui.book;
   updateMistakeCnt(); route(); initCloud(); initAI();
 })();
 </script>
