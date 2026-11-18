@@ -1,0 +1,24 @@
+# Настройки посредника для нейросети (Cloudflare Workers).
+# Ключ OpenRouter сюда НЕ пишется: его добавляют в Cloudflare как секрет OPENROUTER_API_KEY.
+name = "hemispherium-ai"
+main = "worker.js"
+compatibility_date = "2025-09-01"
+workers_dev = true
+
+[vars]
+# С каких страниц можно обращаться к посреднику (через запятую, без / в конце)
+ALLOWED_ORIGINS = "https://hemispherium-med.github.io"
+SITE_URL = "https://hemispherium-med.github.io"
+# Модель OpenRouter. Поменять можно здесь или в Cloudflare: Settings → Variables
+MODEL = "deepseek/deepseek-v4-flash"
+# Максимальная длина ответа (в токенах)
+MAX_TOKENS = "700"
+
+# Не больше 8 запросов в минуту с одного IP-адреса
+[[ratelimits]]
+name = "RL"
+namespace_id = "4317"
+
+  [ratelimits.simple]
+  limit = 8
+  period = 60

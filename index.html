@@ -341,6 +341,7 @@ details.howto[open] summary{margin-bottom:8px}
   .hero-cards{clear:both;margin-top:16px;grid-template-columns:1fr}
 }
 @media (max-width:820px){nav.tabs .lg-only{display:none} nav.tabs .sm-only{display:inline}}
+.ai .aihint{display:block;font-size:.78rem;color:var(--muted);margin-top:6px}
 </style>
 </head>
 <body>
@@ -441,10 +442,97 @@ async function initCloud() {
     P.save(); rerenderIfIdle();
   } catch (e) { /* остаётся локальное хранение */ }
 }
-let AI = null;
+/* ---------- нейросеть ----------
+   Внутри Claude отвечает Claude. На обычном сайте — нейросеть OpenRouter через посредника
+   (Cloudflare Worker, папка api/ в репозитории): ключ хранится у посредника, а не на сайте. */
+const AI_URL = ""; // адрес посредника, например https://hemispherium-ai.<имя>.workers.dev
+let AI = null, AI_WHO = "Claude", AI_WITH = "с Claude";
+function aiExplainData(it) {
+  const q = it.q;
+  return { q: q.q, options: q.o.map(o => o.x), chosen: [...it.sel].map(k => q.o[k].x), right: q.o.filter(o => o.c).map(o => o.x),
+    expl: q.e || "", src: srcLine(q.ch, q.p), notes: q.o.filter(o => !o.c && o.n).map(o => ({ x: o.x, n: o.n })) };
+}
+function aiExplainPrompt(d) {
+  return `Ты — доброжелательный преподаватель неотложной абдоминальной хирургии. Студент-медик (1-й курс) ошибся в тестовом вопросе. Объясни по-русски простым языком, без лишней теории:
+1) почему выбранный им ответ неверен;
+2) почему верен правильный ответ (опирайся на пояснение из книги, не противоречь ему);
+3) как это легко запомнить (короткий приём или ассоциация).
+Не более 8 предложений, без заголовков и markdown.
+
+Источник: ${d.src}
+Вопрос: ${d.q}
+Варианты: ${d.options.join(" | ")}
+Студент выбрал: ${d.chosen.join(" | ")}
+Правильный ответ: ${d.right.join(" | ")}
+Пояснение из книги: ${d.expl}
+${d.notes.map(n => `Почему «${n.x}» неверно: ${n.n}`).join("\n")}`;
+}
+function aiAskData(question, res) {
+  return { question, frags: res.slice(0, 6).map(r => ({ src: srcLine(r.d.ch, r.d.p), q: r.d.q, a: r.d.a.join("; "), e: r.d.e || "" })) };
+}
+function aiAskPrompt(d) {
+  return `Ты — преподаватель неотложной абдоминальной хирургии. Студент-медик 1-го курса задал вопрос. Ответь по-русски, простым языком, 3–7 предложений, без markdown.
+Опирайся ТОЛЬКО на фрагменты из учебников ниже. Если во фрагментах нет ответа на вопрос, прямо скажи, что в книгах этого не нашлось, и не придумывай. В конце укажи источники в скобках (книга, глава, страница).
+
+Вопрос студента: ${d.question}
+
+Фрагменты:
+${d.frags.map((f, i) => `[${i + 1}] Источник: ${f.src}\nВопрос: ${f.q}\nОтвет: ${f.a}${f.e ? `\nПояснение: ${f.e}` : ""}`).join("\n\n")}`;
+}
+async function aiCheckPrompt(d) {
+  return `Ты — преподаватель неотложной абдоминальной хирургии и проверяешь ответ студента-медика на вопрос клинической задачи. Сравни ответ студента с эталоном из книги.
+Первая строка ответа строго: «Оценка: верно», «Оценка: частично верно» или «Оценка: неверно».
+Дальше по-русски простым языком, 3–7 предложений, без markdown: что студент указал правильно, что упустил или в чём ошибся и почему это важно для больного. Не придирайся к формулировкам, если смысл совпадает с эталоном. Не добавляй требований, которых нет в эталоне.
+
+Задача: ${d.title}
+Условие: ${d.text}
+Вопрос: ${d.q}
+Эталон: ${d.a}
+Ответ студента: ${d.answer}`;
+}
+async function aiFetch(payload, onText) {
+  let r;
+  try { r = await fetch(AI_URL.replace(/\/+$/, "") + "/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload) }); }
+  catch (e) { const err = new Error("network"); err.code = "network"; throw err; }
+  if (!r.ok || !r.body) { let j = {}; try { j = await r.json(); } catch (e) {} const err = new Error(j.error || "http_" + r.status); err.code = j.error || "http_" + r.status; throw err; }
+  const reader = r.body.getReader(), dec = new TextDecoder();
+  let buf = "", text = "";
+  for (;;) {
+    const { value, done } = await reader.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    let i;
+    while ((i = buf.indexOf("\n")) >= 0) {
+      const line = buf.slice(0, i).trim(); buf = buf.slice(i + 1);
+      if (!line.startsWith("data:")) continue;
+      const data = line.slice(5).trim(); if (!data || data === "[DONE]") continue;
+      let j; try { j = JSON.parse(data); } catch (e) { continue; }
+      if (j.error) { const err = new Error(j.error.message || "upstream"); err.code = "upstream"; throw err; }
+      const d = j.choices && j.choices[0] && j.choices[0].delta;
+      if (d && typeof d.content === "string" && d.content) { text += d.content; onText(text); }
+    }
+  }
+  if (!text.trim()) { const err = new Error("empty"); err.code = "empty"; throw err; }
+  return text;
+}
+const aiErrText = e => e && e.code === "rate_limited" ? "Слишком много запросов подряд. Попробуйте через минуту." : `Не удалось получить ответ ${AI_WHO === "Claude" ? "Claude" : "нейросети"}.`;
+const AI_HINT = `<span class="aihint">Ответ составлен нейросетью по материалам учебника. Сверяйтесь с разбором из книги.</span>`;
 async function initAI() {
-  if (!window.claude || typeof window.claude.use !== "function") return;
-  try { AI = await window.claude.use("sample"); if (AI) document.body.classList.add("has-ai"); rerenderIfIdle(); } catch (e) { AI = null; }
+  if (window.claude && typeof window.claude.use === "function") {
+    try {
+      const sample = await window.claude.use("sample");
+      if (sample) {
+        const run = async (prompt, on) => { const r = await sample(prompt, { onText: ({ text }) => on(text) }); return r && typeof r.text === "string" ? r.text : String(r || ""); };
+        AI = { explain: (d, on) => run(aiExplainPrompt(d), on), ask: (d, on) => run(aiAskPrompt(d), on), check: (d, on) => run(aiCheckPrompt(d), on) };
+        AI_WHO = "Claude"; AI_WITH = "с Claude";
+      }
+    } catch (e) { AI = null; }
+  }
+  if (!AI && AI_URL) {
+    AI = { explain: (d, on) => aiFetch({ task: "explain", ...d }, on), ask: (d, on) => aiFetch({ task: "ask", ...d }, on), check: (d, on) => aiFetch({ task: "check", ...d }, on) };
+    AI_WHO = "Нейросеть"; AI_WITH = "с нейросетью";
+  }
+  if (AI) { document.body.classList.add("has-ai"); rerenderIfIdle(); }
 }
 
 /* ---------- статистика ---------- */
@@ -860,7 +948,7 @@ function feedbackHTML(it, idx) {
     h += `<p><span class="lab">${right.length > 1 ? "Правильные ответы" : "Правильный ответ"}:</span> ${right.map(o => `«${esc(o.x)}»`).join("; ")}</p>`;
   }
   h += `<p><span class="lab">Объяснение:</span> ${esc(q.e)}</p><div class="src">Источник: ${esc(srcLine(q.ch, q.p))}</div>`;
-  if (!ok && AI) h += `<div><button class="btn sm" data-ai="${idx}">Разобрать мою ошибку подробнее с Claude</button></div><div class="ai" id="ai-${idx}" hidden></div>`;
+  if (!ok && AI) h += `<div><button class="btn sm" data-ai="${idx}">Разобрать мою ошибку подробнее ${AI_WITH}</button></div><div class="ai" id="ai-${idx}" hidden></div>`;
   return h + `</div>`;
 }
 function optsHTML(it, locked) {
@@ -918,25 +1006,10 @@ function renderQ(Q) {
 function bindAI(root, items, getStep) {
   root.querySelectorAll("[data-ai]").forEach(b => b.onclick = async () => {
     const idx = +b.dataset.ai, it = items[idx], box = $("#ai-" + idx, root); if (!AI || !it) return;
-    b.disabled = true; box.hidden = false; box.innerHTML = `<span class="who">Claude</span><span class="t">Думаю…</span>`;
-    const q = it.q, chosen = [...it.sel].map(k => q.o[k].x), right = q.o.filter(o => o.c).map(o => o.x);
-    const prompt = `Ты — доброжелательный преподаватель неотложной абдоминальной хирургии. Студент-медик (1-й курс) ошибся в тестовом вопросе. Объясни по-русски простым языком, без лишней теории:
-1) почему выбранный им ответ неверен;
-2) почему верен правильный ответ (опирайся на пояснение из книги, не противоречь ему);
-3) как это легко запомнить (короткий приём или ассоциация).
-Не более 8 предложений, без заголовков и markdown.
-
-Источник: ${srcLine(q.ch, q.p)}
-Вопрос: ${q.q}
-Варианты: ${q.o.map(o => o.x).join(" | ")}
-Студент выбрал: ${chosen.join(" | ")}
-Правильный ответ: ${right.join(" | ")}
-Пояснение из книги: ${q.e}
-${q.o.filter(o => !o.c && o.n).map(o => `Почему «${o.x}» неверно: ${o.n}`).join("\n")}`;
-    try {
-      const t = box.querySelector(".t");
-      await AI(prompt, { onText: ({ text }) => { t.textContent = text; } });
-    } catch (e) { box.querySelector(".t").textContent = e && e.code === "rate_limited" ? "Слишком много запросов подряд. Попробуйте через минуту." : "Не удалось получить ответ Claude. Разбор из книги выше остаётся в силе."; b.disabled = false; }
+    b.disabled = true; box.hidden = false; box.innerHTML = `<span class="who">${AI_WHO}</span><span class="t">Думаю…</span>`;
+    const t = box.querySelector(".t");
+    try { await AI.explain(aiExplainData(it), text => { t.textContent = text; }); box.insertAdjacentHTML("beforeend", AI_HINT); }
+    catch (e) { t.textContent = aiErrText(e) + " Разбор из книги выше остаётся в силе."; b.disabled = false; }
   });
 }
 function renderResults(Q) {
@@ -983,9 +1056,9 @@ function renderCase(C) {
     return `<div class="step" data-step="${k}"><div class="sn">Вопрос ${k + 1} из ${c.steps.length} · ответ своими словами</div><div class="qtext">${esc(s.q)}</div>
       <label class="small muted" for="ta-${k}">Ваш ответ</label>
       <textarea id="ta-${k}" ${st.shown ? "readonly" : ""} placeholder="Напишите ответ, затем проверьте его">${esc(st.text)}</textarea>
-      ${st.shown ? "" : `<div class="row">${AI ? `<button class="btn primary" data-check="${k}">Проверить с Claude</button>` : ""}<button class="btn" data-show="${k}">Показать эталон</button></div>`}
-      ${st.ai ? `<div class="ai"><span class="who">Claude проверил ответ</span>${esc(st.ai)}</div>` : ""}
-      <div class="ai" id="aio-${k}" hidden><span class="who">Claude проверяет ответ</span><span class="t">Думаю…</span></div>
+      ${st.shown ? "" : `<div class="row">${AI ? `<button class="btn primary" data-check="${k}">Проверить ${AI_WITH}</button>` : ""}<button class="btn" data-show="${k}">Показать эталон</button></div>`}
+      ${st.ai ? `<div class="ai"><span class="who">${AI_WHO === "Claude" ? "Claude проверил ответ" : "Нейросеть проверила ответ"}</span>${esc(st.ai)}</div>` : ""}
+      <div class="ai" id="aio-${k}" hidden><span class="who">${AI_WHO === "Claude" ? "Claude проверяет ответ" : "Нейросеть проверяет ответ"}</span><span class="t">Думаю…</span></div>
       ${st.shown ? `<div class="ref"><b>Эталон:</b> ${esc(s.a)}</div>
         ${st.ok === null ? `<div class="row small"><span class="muted">Как вы ответили?</span><button class="btn sm" data-self="${k}:1">Верно</button><button class="btn sm" data-self="${k}:0.5">Частично</button><button class="btn sm" data-self="${k}:0">Неверно</button></div>` : `<span class="pill ${st.ok === 1 ? "ok" : "bad"}">${st.ok === 1 ? "засчитано как верный" : st.ok === 0.5 ? "частично верно" : "неверно"}</span>`}` : ""}
     </div>`;
@@ -1020,18 +1093,9 @@ function renderCase(C) {
     st.text = $("#ta-" + k).value.trim();
     if (!st.text) { $("#ta-" + k).focus(); return; }
     b.disabled = true; const box = $("#aio-" + k); box.hidden = false; const t = box.querySelector(".t");
-    const prompt = `Ты — преподаватель неотложной абдоминальной хирургии и проверяешь ответ студента-медика на вопрос клинической задачи. Сравни ответ студента с эталоном из книги.
-Первая строка ответа строго: «Оценка: верно», «Оценка: частично верно» или «Оценка: неверно».
-Дальше по-русски простым языком, 3–7 предложений, без markdown: что студент указал правильно, что упустил или в чём ошибся и почему это важно для больного. Не придирайся к формулировкам, если смысл совпадает с эталоном. Не добавляй требований, которых нет в эталоне.
-
-Задача: ${c.title}
-Условие: ${c.text.join(" ")}
-Вопрос: ${s.q}
-Эталон: ${s.a}
-Ответ студента: ${st.text}`;
     try {
-      const r = await AI(prompt, { onText: ({ text }) => { t.textContent = text; } });
-      st.ai = r.text; const first = (r.text.split("\n")[0] || "").toLowerCase();
+      const text = await AI.check({ title: c.title, text: c.text.join(" "), q: s.q, a: s.a, answer: st.text }, tx => { t.textContent = tx; });
+      st.ai = text; const first = (text.split("\n")[0] || "").toLowerCase();
       st.ok = first.includes("частично") ? 0.5 : first.includes("неверно") ? 0 : first.includes("верно") ? 1 : null;
       st.shown = true; st.done = true; renderCase(C);
     } catch (e) { t.textContent = e && e.code === "rate_limited" ? "Слишком много запросов подряд. Попробуйте позже или нажмите «Показать эталон»." : "Не удалось проверить ответ. Нажмите «Показать эталон» и оцените себя сами."; b.disabled = false; }
@@ -1203,23 +1267,16 @@ async function viewAsk() {
     }
     const shown = res.slice(0, askShown);
     box.innerHTML = `<div class="secthead"><h2>${res.length >= 30 ? "Самые подходящие ответы" : `Нашёл ответов: ${res.length}`}</h2><span class="meta">сначала самые подходящие</span></div>
-      ${AI ? `<section class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>Ответ одним текстом</b><button class="btn sm" id="askAI" type="button">Сформулировать (Claude)</button></div><div class="ai" id="askAIbox" hidden></div></section>` : ""}
+      ${AI ? `<section class="card stack" style="gap:8px"><div class="row" style="justify-content:space-between"><b>Ответ одним текстом</b><button class="btn sm" id="askAI" type="button">Сформулировать (${AI_WHO})</button></div><div class="ai" id="askAIbox" hidden></div></section>` : ""}
       ${shown.map(r => ansCard(r, stems)).join("")}
       ${res.length > askShown ? `<div><button class="btn" id="askMore" type="button">Показать ещё ${Math.min(5, res.length - askShown)}</button></div>` : ""}`;
     const more = $("#askMore"); if (more) more.onclick = () => { askShown += 5; render(); };
     const ai = $("#askAI");
     if (ai) ai.onclick = async () => {
-      const out = $("#askAIbox"); ai.disabled = true; out.hidden = false; out.innerHTML = `<span class="who">Claude</span><span class="t">Думаю…</span>`;
-      const frag = res.slice(0, 6).map((r, i) => `[${i + 1}] Источник: ${srcLine(r.d.ch, r.d.p)}\nВопрос: ${r.d.q}\nОтвет: ${r.d.a.join("; ")}${r.d.e ? `\nПояснение: ${r.d.e}` : ""}`).join("\n\n");
-      const prompt = `Ты — преподаватель неотложной абдоминальной хирургии. Студент-медик 1-го курса задал вопрос. Ответь по-русски, простым языком, 3–7 предложений, без markdown.
-Опирайся ТОЛЬКО на фрагменты из учебников ниже. Если во фрагментах нет ответа на вопрос, прямо скажи, что в книгах этого не нашлось, и не придумывай. В конце укажи источники в скобках (книга, глава, страница).
-
-Вопрос студента: ${q}
-
-Фрагменты:
-${frag}`;
-      try { const t = out.querySelector(".t"); await AI(prompt, { onText: ({ text }) => { t.textContent = text; } }); }
-      catch (e) { out.querySelector(".t").textContent = e && e.code === "rate_limited" ? "Слишком много запросов подряд. Попробуйте через минуту." : "Не удалось получить ответ Claude. Найденные разборы ниже остаются в силе."; ai.disabled = false; }
+      const out = $("#askAIbox"); ai.disabled = true; out.hidden = false; out.innerHTML = `<span class="who">${AI_WHO}</span><span class="t">Думаю…</span>`;
+      const t = out.querySelector(".t");
+      try { await AI.ask(aiAskData(q, res), text => { t.textContent = text; }); out.insertAdjacentHTML("beforeend", AI_HINT); }
+      catch (e) { t.textContent = aiErrText(e) + " Найденные разборы ниже остаются в силе."; ai.disabled = false; }
     };
   };
   let tm = null;
